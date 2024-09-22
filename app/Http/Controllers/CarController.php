@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Mockery\Exception;
 
 class CarController extends Controller
 {
@@ -14,27 +16,32 @@ class CarController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application |
-     *  @since 1.0 release of branch/onCar-01
+     *  @since 1.0 release of branch/onCar-02
      * @autor nany huna
-     * @since elease feature/OnCarApp-02
      */
     public function newCar(Request $request)
     {
         try{
             $car = new Car();
+            # start db transaction
+            DB::beginTransaction();
             $car->marca  = $request->input('marca');;
             $car->modelo = $request->input('modelo');
             $car->cor    = $request->input('cor');
             $car->save();
+            DB::commit();
             return redirect('/getCars')->with('status','novo carro foi registado com sucesso!');
         }catch (\Exception $e){
-            return redirect()->back();
+            DB::rollBack();
+            return redirect()->back()>with('error','algo deu errado '.$e->getMessage());
 
         }
 
     }
 
     /**
+     * Update an existing car
+     *
      * @param Request $request
      * @param int $id
      * @return \Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -42,22 +49,28 @@ class CarController extends Controller
      */
     public function updateCar(Request $request, int $id)
     {
-
-        $car = Car::find($id);
-        if(!$car){
-            return redirect('/getCars')->with('warning','Car não encontrado!');
+        try {
+            $car = Car::find($id);
+            if(!$car){
+                return redirect('/getCars')->with('warning','Car não encontrado!');
+            }
+            DB::beginTransaction();
+            $car->marca  = !$request->input('marca') ? $car->marca  : $request->input('marca');
+            $car->modelo = !$request->input('modelo')? $car->modelo : $request->input('modelo');
+            $car->cor    = !$request->input('cor')   ? $car->cor    : $request->input('cor');
+            $car->save();
+            DB::commit();
+            return redirect('/getCars')->with('status','Car editado com sucesso!');
+        }catch (Exception $e){
+            DB::rollBack();
+            return redirect()->back()>with('error','algo deu errado '.$e->getMessage());
         }
-        $car->marca  = !$request->input('marca') ? $car->marca  : $request->input('marca');
-        $car->modelo = !$request->input('modelo')? $car->modelo : $request->input('modelo');
-        $car->cor    = !$request->input('cor')   ? $car->cor    : $request->input('cor');
-        $car->save();
-        return redirect('/getCars')->with('status','Car editado com sucesso!');
 
     }
 
     /**
      *
-     *   it's method return all cars we have
+     * it's method return all cars we have
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse
      * @author nany huna
@@ -70,41 +83,23 @@ class CarController extends Controller
             $status   = '';
             return view('cars', compact('cars','status'));
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
+            return redirect()->back()>with('error','algo deu errado '.$e->getMessage());
         }
     }
 
     /**
      *
-     * It's method get a single Car
+     *  Method to delete a car
      *
-     * @since 1.0 release of branch feature/onCar-02
-     * @author Nany Huna
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getCar(int $id){
-        $car = New Car();
-        try {
-            return response()->json($car->find($id));
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
-        }
-
-    }
-
-
-    /**
-     * Method to delete a car
-     *
-     *  @param int $idCar
-     * @return \Illuminate\Http\RedirectResponse|
+     * @param Request $request
+     * @return \Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *@since 1.0 release of branch feature/onCar-02
+     * /
      */
     public function deleteCar(Request $request)
     {
-        $car =  Car::find($request->input('id'));
         try{
+            $car =  Car::find($request->input('id'));
             if(!$car){
                 return redirect('/getCars')->with('warning','Car '.$request->input('id').' inexistente na lista!');
             }

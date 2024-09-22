@@ -20,19 +20,19 @@
                         <div class="row mb-3">
                             <label for="modelo" class="col-sm-2 col-form-label col-form-label-sm">Modelo</label>
                             <div class="col-sm-10">
-                                <input name="modelo" type="text" class="form-control form-control-sm" id="modelo" placeholder="Modelo">
+                                <input name="modelo" type="text" class="form-control form-control-sm" id="modelo" placeholder="Modelo" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="marca" class="col-sm-2 col-form-label col-form-label-sm">Marca</label>
                             <div class="col-sm-10">
-                                <input type="text" name="marca" class="form-control form-control-sm" id="marca" placeholder="Marca">
+                                <input type="text" name="marca" class="form-control form-control-sm" id="marca" placeholder="Marca" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="cor" class="col-sm-2 col-form-label col-form-label-sm">cor</label>
                             <div class="col-sm-5">
-                                <input type="text" name="cor" class="form-control form-control-sm" id="cor" placeholder="cor">
+                                <input type="text" name="cor" class="form-control form-control-sm" id="cor" placeholder="cor" required>
                             </div>
                             <div class="col-sm-5">
                                 <button type="submit" class="btn-primary">Gravar</button>
