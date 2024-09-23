@@ -20,7 +20,6 @@ class CarRequest extends FormRequest
      *
      * Validate input requests
      *
-
      * @param Validator $validator
      * @return array
      * @since release of feature/onCarApp-01

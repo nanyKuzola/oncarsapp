@@ -111,16 +111,6 @@ class CarController extends Controller
 
     }
 
-    /**
-     * Get information of credit car
-     *
-     * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|null
-     */
-    public function finance(Request $request){
-        $simulacao    = Car::checkFinance();
-        return redirect('/getCars')->with('status', $request->input('cliNome')." Com base o teu  score de ".$simulacao['score'].' o seu credito será '.$simulacao['credito']);
-    }
 
 
 }
