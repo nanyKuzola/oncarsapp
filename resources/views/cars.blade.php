@@ -97,13 +97,14 @@
 
                                             <form class="row" method="POST" action="{{route('finance')}}">
                                                 {{csrf_field()}}
+                                                <input type="number" class="form-control" id="car_id" name="car_id" value="{{$car->id}}" hidden="">
                                                 <div class="col-md-6">
                                                     <label for="cliNome" class="form-label">Nome</label>
-                                                    <input type="text" class="form-control" id="cliNome" name="cliNome" required>
+                                                    <input type="text" class="form-control" id="nome" name="nome" required>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="sobreNome" class="form-label">Sobre Nome</label>
-                                                    <input type="text" class="form-control" id="sobreNome" name="sobreNome" required>
+                                                    <input type="text" class="form-control" id="sobrenome" name="sobrenome" required>
                                                 </div>
                                                 <div class="col-12">
                                                     <label for="endereco" class="form-label">Endereço</label>
@@ -225,7 +226,11 @@
 @section('javascript')
     @include('components/dataTablesDependency')
     <script>
+        {}
         new DataTable('#carTables', {
+            searching: false,
+            paging: false,
+            info: false,
             columnDefs: [{ width: '25%', targets: 4 }]
         });
     </script>
